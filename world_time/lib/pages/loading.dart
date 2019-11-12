@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:world_time/services/world_time.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Loading extends StatefulWidget {
   @override
@@ -7,31 +9,33 @@ class Loading extends StatefulWidget {
 
 class _LoadingState extends State<Loading> {
 
-  void getData() async {
+  void setupWorldTime() async {
+    WorldTime worldTime = WorldTime(location: 'Kolkata', flag: 'kolkata.png', url: 'Asia/kolkata');
+    await worldTime.getTime();
 
-    // Simulate network request for username
-    String username = await Future.delayed(Duration(seconds: 3), () {
-      return 'Tiger';
+    Navigator.pushReplacementNamed(context, '/home', arguments: {
+      'location': worldTime.location,
+      'flag': worldTime.flag,
+      'time': worldTime.time,
     });
-
-    // Simulate network request to get bio of the username.
-    String bio = await Future.delayed(Duration(seconds: 2,), () {
-      return 'Singer, coder & adventerous';
-    });
-
-    print('$username - $bio');
   }
 
   @override
   void initState() {
     super.initState();
-    getData();
+    setupWorldTime();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text("Loading Screen."),
+      backgroundColor: Colors.blue[900],
+      body: Center(
+        child: SpinKitFadingCube(
+          color: Colors.white,
+          size: 50.0,
+        ),
+      ),
     );
   }
 }
